@@ -1,0 +1,5 @@
+speechrecognition
+edge-tts
+playsound
+requests
+python-dotenv
