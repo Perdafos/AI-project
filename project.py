@@ -7,6 +7,10 @@ import random
 import requests
 import uuid
 import os
+from dotenv import load_dotenv  # Import dotenv to load environment variables
+
+# Load environment variables from .env file
+load_dotenv()
 
 # ========== TTS ==========
 async def speak_async(text, voice="en-US-AriaNeural"):
@@ -14,11 +18,14 @@ async def speak_async(text, voice="en-US-AriaNeural"):
     output_file = f"output_{uuid.uuid4()}.mp3"
     tts = Communicate(text, voice=voice)
     await tts.save(output_file)
-    playsound(output_file)
     try:
-        os.remove(output_file)
-    except Exception as e:
-        print(f"Could not delete temp file: {e}")
+        playsound(output_file)
+    finally:
+        # Ensure the file is deleted immediately after playback
+        try:
+            os.remove(output_file)
+        except Exception as e:
+            print(f"Could not delete temp file: {e}")
         
 def speak(text, voice="en-US-AriaNeural"):
     """Function to output speech with a specified voice"""
@@ -73,7 +80,7 @@ def listen():
 
 # ========== NEWS ==========
 def get_news():
-    api_key = "4998f51a47334c158067b0f6d50f9c15"  # Ganti kalau punya API lain
+    api_key = os.getenv("NEWSAPI_API_KEY")  # Load API key from environment variable
     url = f"https://newsapi.org/v2/top-headlines?country=us&apiKey={api_key}"
     
     try:
@@ -94,7 +101,7 @@ def get_news():
     
 # ========== WEATHER ==========
 def get_weather():
-    api_key = "be9b94341a6033205d5140695c0b9c99"  # Gunakan API key yang benar
+    api_key = os.getenv("OPENWEATHERMAP_API_KEY")  # Load API key from environment variable
     city = "Malang,ID"  # Lokasi: Malang, Indonesia
     url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric&lang=id"
 
